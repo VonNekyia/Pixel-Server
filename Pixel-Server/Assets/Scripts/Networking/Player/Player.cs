@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
 using RiptideNetworking;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.VFX;
 
 public class Player : MonoBehaviour
 {
+    
+    
+
+    
     public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
     
     public ushort Id { get; private set; }
@@ -16,7 +15,8 @@ public class Player : MonoBehaviour
 
     public PlayerMovement Movement => movement;
     [SerializeField] private PlayerMovement movement;
-
+    
+    
     private void OnDestroy()
     {
         list.Remove(Id);
@@ -51,6 +51,8 @@ public class Player : MonoBehaviour
         NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.reliable, ServerToClientID.playerSpawned)), toClientId);
     }
     
+   
+    
     private Message AddSpawnData(Message message)
     {
         message.AddUShort(Id);
@@ -59,12 +61,14 @@ public class Player : MonoBehaviour
         return message;
     }
     
+    //Übermittlung des Spielernamens
     [MessageHandler((ushort)ClientToServerID.name)]
     private static void Name(ushort fromClientId, Message message)
     {
         Spawn(fromClientId, message.GetString());
     }
 
+    //Übermittlung des Spielermovements
     [MessageHandler((ushort)ClientToServerID.input)]
     private static void Input(ushort fromClientId, Message message)
     {
@@ -72,9 +76,21 @@ public class Player : MonoBehaviour
         {
             player.Movement.SetInput(message.GetBools(5));            
         }
-
-        
     }
+    
+    //Übermittlung ob Spieler attackt
+    [MessageHandler((ushort)ClientToServerID.attacking)]
+    private static void isAttacking(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+        {
+            player.Movement.SetIsAttacking(message.GetBool());
+
+        }
+    }
+        
+        
+        
     #endregion
 
 }

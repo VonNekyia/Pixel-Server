@@ -9,12 +9,14 @@ public enum ServerToClientID : ushort
     playerSpawned = 1,
     playerMovement = 2,
     playerMessage = 3,
+    playerAttack = 4,
 }
 public enum ClientToServerID : ushort
 {
     name = 1,
     input = 2,
     playerMessageReceiver = 3,
+    attacking = 4,
 }
 
 public class NetworkManager : MonoBehaviour

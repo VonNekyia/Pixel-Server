@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit2D left;
     private RaycastHit2D up;
     private RaycastHit2D down;
+    public bool isAttacking;
 
     private void OnValidate()
     {
@@ -108,7 +109,6 @@ public class PlayerMovement : MonoBehaviour
 
         return false;
         
-      return true;
     }
     
     
@@ -135,6 +135,12 @@ public class PlayerMovement : MonoBehaviour
     {
         this.inputs = inputs;
     }
+    
+    public void SetIsAttacking(bool isAttacking)
+    {
+        this.isAttacking = isAttacking;
+        SendAttack();
+    }
 
     private void SendMovement()
     {
@@ -143,5 +149,15 @@ public class PlayerMovement : MonoBehaviour
         message.AddVector3(transform.position);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
+    
+    private void SendAttack()
+    {
+        Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.playerAttack);
+        message.AddUShort(player.Id);
+        message.AddBool(player.Movement.isAttacking);
+        NetworkManager.Singleton.Server.SendToAll(message);
+    }
 
+    
+    
 }
