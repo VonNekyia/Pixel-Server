@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 
     public PlayerMovement Movement => movement;
     [SerializeField] private PlayerMovement movement;
-    
+
     
     private void OnDestroy()
     {
@@ -85,7 +85,7 @@ public class Player : MonoBehaviour
         if (list.TryGetValue(fromClientId, out Player player))
         {
             player.Movement.SetIsAttacking(message.GetBool());
-
+            PlayerAttack.Singleton.Attack();
         }
     }
         

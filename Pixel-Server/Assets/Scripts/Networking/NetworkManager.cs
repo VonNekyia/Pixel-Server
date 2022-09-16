@@ -10,6 +10,8 @@ public enum ServerToClientID : ushort
     playerMovement = 2,
     playerMessage = 3,
     playerAttack = 4,
+    enemySpawned = 5,
+    enemyMovement = 6,
 }
 public enum ClientToServerID : ushort
 {
