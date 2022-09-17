@@ -8,7 +8,7 @@ public class Umbala : Enemy
     public static Dictionary<ushort, Umbala> list = new Dictionary<ushort, Umbala>();
     public static ushort ID = 0;
 
-    private void Update()
+    private void FixedUpdate()
     {
         SendMovement(enemyID,gameObject.transform.position);
     }

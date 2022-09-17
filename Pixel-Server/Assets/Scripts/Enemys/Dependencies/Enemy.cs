@@ -14,9 +14,15 @@ public class Enemy : MonoBehaviour, IEnemy
     public void TakeDamage(int damage,Enemy enemy)
     {
         livePoints -= damage;
+        
         if (livePoints <= 0)
         {
             Die(enemy);
+            
+        }
+        else
+        {
+            SendEnemyState(enemy.enemyID, false);
         }
     }
 
@@ -25,7 +31,7 @@ public class Enemy : MonoBehaviour, IEnemy
         enemy.Spawner.gameObject.GetComponent<EnemySpawner>().count -= 1;
         Umbala.list.Remove(enemy.enemyID);
         EnemySpawner.list.Remove(enemy.enemyID);
-        SendKill(enemy.enemyID);
+        SendEnemyState(enemy.enemyID,true);
         Destroy(enemy.gameObject);
         
         
@@ -39,10 +45,11 @@ public class Enemy : MonoBehaviour, IEnemy
         NetworkManager.Singleton.Server.SendToAll(message);
     }
     
-    public void SendKill(ushort enemyID)
+    public void SendEnemyState(ushort enemyID, bool state)
     {
         Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.enemyKilled);
         message.AddUShort(enemyID);
+        message.AddBool(state);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 }
