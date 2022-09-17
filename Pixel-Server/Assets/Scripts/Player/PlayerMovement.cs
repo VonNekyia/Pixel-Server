@@ -27,6 +27,10 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit2D up;
     private RaycastHit2D down;
     public bool isAttacking;
+    
+    public LayerMask mapColission;
+    public LayerMask enemyColission;
+    private ContactFilter2D playerMovementFilter;
 
     private void OnValidate()
     {
@@ -41,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         Initialize();
+        playerMovementFilter.layerMask = mapColission + enemyColission;
         inputs = new bool[5];
     }
     
@@ -83,11 +88,10 @@ public class PlayerMovement : MonoBehaviour
 
         int count = rb.Cast(
             inputDirection, // X and Y values between -1 and 1 that represent the direction from the body to look for collisions
-            movementFilter, // The settings that determine where a collision can occur on such as layers to collide with
+            playerMovementFilter, // The settings that determine where a collision can occur on such as layers to collide with
             castCollisions, // List of collisions to store the found collisions into after the Cast is finished
             moveSpeed * Time.fixedDeltaTime +
             collisionOffset); // The amount to cast equal to the movement plus an offset
-       Debug.Log(count);
         if (count == 0)
             return true;
         

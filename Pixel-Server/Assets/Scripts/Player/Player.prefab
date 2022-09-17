@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3709114887862489251}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.15, y: -0.1, z: 0}
+  m_LocalPosition: {x: 0.347, y: -0.006, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -111,7 +111,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -484291685, guid: c5a219da737bc3b44ac538ab7bd2d989, type: 3}
+  m_Sprite: {fileID: 2139330399, guid: ad85e533a0002f247aa0dc5d021ef93b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -134,7 +134,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 80
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -156,6 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: {fileID: 1620802166479195509}
+  attack: {fileID: 6645130194339896335}
 --- !u!114 &1620802166479195509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +188,12 @@ MonoBehaviour:
     maxNormalAngle: 0
   collisionOffset: 0.05
   isAttacking: 0
+  mapColission:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyColission:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &6645130194339896335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,7 +228,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.48, y: 0.48}
+    oldSize: {x: 1.44, y: 0.96}
     newSize: {x: 0.48, y: 0.48}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -243,6 +250,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.1652472}
-  m_Size: {x: 0.06, y: 0.01}
+  m_Offset: {x: -0.019890653, y: -0.25018102}
+  m_Size: {x: 0.17445096, y: 0.014790954}
   m_Direction: 1

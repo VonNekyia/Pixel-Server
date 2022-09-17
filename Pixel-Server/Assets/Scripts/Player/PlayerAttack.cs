@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     
-    private static PlayerAttack _singleton;
+    /*private static PlayerAttack _singleton;
 
     public static PlayerAttack Singleton
     {
@@ -21,17 +21,18 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+*/
 
     public Transform attackPoint;
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
     private int attackDamage = 1;
-    
+    /*
     public void Awake()
     {
         Singleton = this;
     }
-    
+    */
     // Start is called before the first frame update
     void Start()
     {
@@ -44,8 +45,9 @@ public class PlayerAttack : MonoBehaviour
         
     }
 
-    public void Attack()
+    public void Attack(Player player)
     {
+        StartCoroutine(AttackCooldown(player));
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayers);
         foreach (Collider2D enemy in hitEnemies)
         {
@@ -53,6 +55,13 @@ public class PlayerAttack : MonoBehaviour
             umbala.TakeDamage(attackDamage, umbala);
         }
     }
+    
+    static IEnumerator AttackCooldown(Player player)
+    {
+        player.isOnAttackCooldown = true;
+        yield return new WaitForSeconds(1);
+        player.isOnAttackCooldown = false;
+    } 
 
     
     

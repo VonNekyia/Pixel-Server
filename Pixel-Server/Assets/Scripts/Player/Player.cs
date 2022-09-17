@@ -1,5 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using RiptideNetworking;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,11 +15,17 @@ public class Player : MonoBehaviour
     
     public ushort Id { get; private set; }
     public string Username { get; private set; }
+    public bool isOnAttackCooldown { get; set; }
+    
 
     public PlayerMovement Movement => movement;
     [SerializeField] private PlayerMovement movement;
-
     
+    public PlayerAttack Attack => attack;
+    [SerializeField] private PlayerAttack attack;
+    
+    
+
     private void OnDestroy()
     {
         list.Remove(Id);
@@ -27,14 +36,13 @@ public class Player : MonoBehaviour
         foreach (Player otherPlayer in list.Values)
         {
             otherPlayer.SendSpawned(id);
-                
         }
-        
+        Debug.Log("Spawn");
         Player player = Instantiate(GameLogic.Singleton.PlayerPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Player>();
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
-        
+        EnemySpawner.Singleton.SpawnEnemys(player.Id);
         player.SendSpawned();
         list.Add(id, player);
     }
@@ -84,13 +92,22 @@ public class Player : MonoBehaviour
     {
         if (list.TryGetValue(fromClientId, out Player player))
         {
-            player.Movement.SetIsAttacking(message.GetBool());
-            PlayerAttack.Singleton.Attack();
+            if (!player.isOnAttackCooldown)
+            {
+                player.Movement.SetIsAttacking(message.GetBool());
+                player.attack.Attack(player);
+            }
+            
         }
+        
+        
+        
     }
         
-        
+  
         
     #endregion
+    
 
 }
+  
