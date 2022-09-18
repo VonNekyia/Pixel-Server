@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 707131730104257945}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 6645130194339896335}
   - component: {fileID: 227748850206413391}
   - component: {fileID: 8390601695863322840}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -190,10 +190,13 @@ MonoBehaviour:
   isAttacking: 0
   mapColission:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   enemyColission:
     serializedVersion: 2
     m_Bits: 0
+  playerColission:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &6645130194339896335
 MonoBehaviour:
   m_ObjectHideFlags: 0

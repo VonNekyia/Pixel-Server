@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     
     public LayerMask mapColission;
     public LayerMask enemyColission;
+    public LayerMask playerColission;
     private ContactFilter2D playerMovementFilter;
 
     private void OnValidate()
@@ -45,7 +46,8 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         Initialize();
-        playerMovementFilter.layerMask = mapColission + enemyColission;
+        playerMovementFilter.layerMask = mapColission;
+        playerMovementFilter.useLayerMask = true;
         inputs = new bool[5];
     }
     
@@ -85,7 +87,6 @@ public class PlayerMovement : MonoBehaviour
     //KINEMATIC
     private bool CanMove(Vector2 inputDirection) // kinematic
     {
-
         int count = rb.Cast(
             inputDirection, // X and Y values between -1 and 1 that represent the direction from the body to look for collisions
             playerMovementFilter, // The settings that determine where a collision can occur on such as layers to collide with
@@ -116,8 +117,9 @@ public class PlayerMovement : MonoBehaviour
         if (sprint)
             moveDirection *= 2f;
         //rb.MovePosition(rb.position + moveDirection); KINEMATIC
+        Physics2D.IgnoreLayerCollision(7,7,true);
         rb.velocity = new Vector2(moveDirection.x, moveDirection.y); // DYNAMIC
-        
+
         SendMovement();
     }
 
