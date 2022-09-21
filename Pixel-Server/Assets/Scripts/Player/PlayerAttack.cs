@@ -49,10 +49,10 @@ public class PlayerAttack : MonoBehaviour
     {
         StartCoroutine(AttackCooldown(player));
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayers);
-        foreach (Collider2D enemy in hitEnemies)
+        foreach (Collider2D hittedObject in hitEnemies)
         {
-            Umbala umbala = enemy.GetComponent<Umbala>();
-            umbala.TakeDamage(attackDamage, umbala);
+            Enemy enemy = hittedObject.GetComponent<Enemy>();
+            enemy.TakeDamage(attackDamage, enemy);
         }
     }
     

@@ -42,9 +42,25 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
-        EnemySpawner.Singleton.SpawnEnemys(player.Id);
+        SendEnemysOnPlayerJoin(player.Id);
+       
         player.SendSpawned();
         list.Add(id, player);
+    }
+    
+    public static void SendEnemysOnPlayerJoin(ushort clientID) {
+        foreach (Enemy enemy in EnemySpawner.list.Values) {
+            Debug.Log("Sende umbala daten");
+            SendSpawned(enemy, clientID);
+        }
+    }
+    
+    static void SendSpawned(Enemy enemy, ushort clientID) {
+        Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.enemySpawned);
+        message.AddInt(enemy.enemyID);
+        message.AddInt(enemy.type);
+        message.AddVector3(enemy.transform.position);
+        NetworkManager.Singleton.Server.Send(message,clientID);
     }
 
     #region Messages

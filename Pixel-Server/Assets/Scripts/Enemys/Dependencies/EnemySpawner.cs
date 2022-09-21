@@ -1,94 +1,99 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using RiptideNetworking;
 using UnityEngine;
 using Random = System.Random;
 
-public class EnemySpawner : MonoBehaviour, IEnemySpawner
-{
-    private static EnemySpawner _singleton;
+public enum EnemyTypeID : ushort {
+    Umbala = 1,
+    Wolf = 2,
+    Death = 3,
+}
 
-    public static EnemySpawner Singleton
-    {
+public class EnemySpawner : MonoBehaviour, IEnemySpawner {
+    /*
+    private static EnemySpawner _singleton;
+    
+    public static EnemySpawner Singleton {
         get => _singleton;
-        private set
-        {
+        private set {
             if (_singleton == null)
                 _singleton = value;
-            else if (_singleton != value)
-            {
+            else if (_singleton != value) {
                 Debug.Log($"{nameof(EnemySpawner)} instance already exists, destroying duplicate!");
                 Destroy(value);
             }
         }
     }
-    
-    
-    public static Dictionary<ushort, Umbala> list = new Dictionary<ushort, Umbala>();
-    public ushort count = 0;
-    private ushort limit = 5;
+    */
+    public static Dictionary<int, Enemy> list = new Dictionary<int, Enemy>();
+    private ushort count = 0;
+    private Random random = new Random();
+    private bool cooldown;
+
     [Header("Spawn Settings")]
+    [SerializeField] private ushort limit = 5;
     [SerializeField] private ushort interval;
     [SerializeField] private ushort MinLvl;
     [SerializeField] private ushort MaxLvl;
-    private bool cooldown;
-    [SerializeField] private GameObject umbalaPrefab;
-
-    public void Awake()
-    {
+    [SerializeField] private ushort Spawnradius;
+    [SerializeField] private EnemyTypeID enemyTypeID = EnemyTypeID.Umbala;
+    [SerializeField] public GameObject umbalaPrefab;
+    [SerializeField] public GameObject wolfPrefab;
+    [SerializeField] public GameObject deathPrefab;
+    /*
+    public void Awake() {
         Singleton = this;
     }
-    
-    void Update()
-    {
-        if (!cooldown && count != 5)
-        {
-            Random random = new Random();
+    */
+    private void Update() {
+        if (count != limit && !cooldown) {
+            
             int Lvl = random.Next(MinLvl,  MaxLvl);
-            Umbala umbala = Umbala.Spawn(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y - count), umbalaPrefab, (ushort)Lvl);
-            umbala.Spawner = gameObject;
-            umbala.transform.parent = gameObject.transform;
-            StartCoroutine(Cooldown());
+            Vector3 spawnPositionRandomiser = new Vector3(random.Next(-Spawnradius,Spawnradius),random.Next(-Spawnradius,Spawnradius));
+            
+            GameObject enemyPrefab = enemyTypeID switch {
+                EnemyTypeID.Umbala => umbalaPrefab,
+                EnemyTypeID.Wolf => wolfPrefab,
+                EnemyTypeID.Death => deathPrefab,
+                _ => umbalaPrefab
+            };
+
+            Enemy enemy = Enemy.Spawn(gameObject.transform.position + spawnPositionRandomiser,enemyPrefab, (ushort)Lvl);
+
+            enemy.Spawner = gameObject;
+            enemy.transform.parent = gameObject.transform;
+            enemy.type = (int)enemyTypeID;
+            StartCoroutine(SpawnCooldown());
             cooldown = true;
             count++;
-            Umbala.list.Add(umbala.enemyID, umbala);
-            list.Add(umbala.enemyID, umbala);
-            SendSpawnedToAll(umbala);
-        }
-        
-    }
-
-    public void SpawnEnemys(ushort clientID)
-    {
-        
-        foreach (Umbala umbala in list.Values)
-        {
-            Debug.Log("Sende umbala daten");
-            SendSpawned(umbala, clientID);
+            
+            list.Add(enemy.enemyID, enemy);
+            SendSpawnedToAll(enemy);
         }
     }
     
-    IEnumerator Cooldown()
-    {
+    IEnumerator SpawnCooldown() {
         yield return new WaitForSeconds(interval);
         cooldown = false;
     }
+    
 
-    private void SendSpawnedToAll(Umbala umbala)
-    {
+    
+    private void SendSpawnedToAll(Enemy enemy) {
         Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.enemySpawned);
-        message.AddUShort(umbala.enemyID);
-        message.AddVector3(umbala.transform.position);
+        message.AddInt(enemy.enemyID);
+        message.AddInt(enemy.type);
+        message.AddVector3(enemy.transform.position);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
-    
-    private void SendSpawned(Umbala umbala, ushort clientID)
-    {
-        Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.enemySpawned);
-        message.AddUShort(umbala.enemyID);
-        message.AddVector3(umbala.transform.position);
-        NetworkManager.Singleton.Server.Send(message,clientID);
-    }
 
+    public void ReduceCount(ushort number) {
+       count -= number;
+    }
 }
+
+
+
+
+

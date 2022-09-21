@@ -3,7 +3,10 @@ guid: 91654db1485d83d41b4614033c6e3e97
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - umbalaPrefab: {fileID: 59807035479482778, guid: 4b93af2a8da420d4e9ac9a964d211d2f, type: 3}
+  - wolfPrefab: {fileID: 59807035479482778, guid: 3947e13cd128ebe4e90e789147fffab2, type: 3}
+  - deathPrefab: {fileID: 59807035479482778, guid: 63433cbfe6411d349971f3e8beb663da, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
