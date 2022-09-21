@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using RiptideNetworking;
 using UnityEngine;
-using Random = System.Random;
+using UnityEngine.Serialization;
 
 public enum EnemyTypeID : ushort {
     Umbala = 1,
@@ -11,47 +11,31 @@ public enum EnemyTypeID : ushort {
 }
 
 public class EnemySpawner : MonoBehaviour, IEnemySpawner {
-    /*
-    private static EnemySpawner _singleton;
-    
-    public static EnemySpawner Singleton {
-        get => _singleton;
-        private set {
-            if (_singleton == null)
-                _singleton = value;
-            else if (_singleton != value) {
-                Debug.Log($"{nameof(EnemySpawner)} instance already exists, destroying duplicate!");
-                Destroy(value);
-            }
-        }
-    }
-    */
-    public static Dictionary<int, Enemy> list = new Dictionary<int, Enemy>();
-    private ushort count = 0;
-    private Random random = new Random();
-    private bool cooldown;
 
+    public static Dictionary<int, Enemy> list = new Dictionary<int, Enemy>();
+    
+    private ushort enemySpawnCount;
+    private bool isOnSpawnCooldown;
+    private static int _id;
+    
     [Header("Spawn Settings")]
-    [SerializeField] private ushort limit = 5;
-    [SerializeField] private ushort interval;
-    [SerializeField] private ushort MinLvl;
-    [SerializeField] private ushort MaxLvl;
-    [SerializeField] private ushort Spawnradius;
     [SerializeField] private EnemyTypeID enemyTypeID = EnemyTypeID.Umbala;
+    [SerializeField] private ushort minLvl;
+    [SerializeField] private ushort maxLvl;
+    [SerializeField] private ushort spawnRadius;
+    [SerializeField] private ushort enemySpawnLimit = 5;
+    [SerializeField] private ushort spawnInterval;
+
+    [Header("Prefabs")]
     [SerializeField] public GameObject umbalaPrefab;
     [SerializeField] public GameObject wolfPrefab;
     [SerializeField] public GameObject deathPrefab;
-    /*
-    public void Awake() {
-        Singleton = this;
-    }
-    */
+
     private void Update() {
-        if (count != limit && !cooldown) {
-            
-            int Lvl = random.Next(MinLvl,  MaxLvl);
-            Vector3 spawnPositionRandomiser = new Vector3(random.Next(-Spawnradius,Spawnradius),random.Next(-Spawnradius,Spawnradius));
-            
+        
+        if (enemySpawnCount != enemySpawnLimit && !isOnSpawnCooldown) {
+            float lvl = Random.Range(minLvl, maxLvl);;
+            Vector3 spawnPositionRandomiser = new Vector3(Random.Range(-spawnRadius,spawnRadius),Random.Range(-spawnRadius,spawnRadius));
             GameObject enemyPrefab = enemyTypeID switch {
                 EnemyTypeID.Umbala => umbalaPrefab,
                 EnemyTypeID.Wolf => wolfPrefab,
@@ -59,37 +43,45 @@ public class EnemySpawner : MonoBehaviour, IEnemySpawner {
                 _ => umbalaPrefab
             };
 
-            Enemy enemy = Enemy.Spawn(gameObject.transform.position + spawnPositionRandomiser,enemyPrefab, (ushort)Lvl);
-
+            Enemy enemy = Spawn(gameObject.transform.position + spawnPositionRandomiser,enemyPrefab, (ushort)lvl);
             enemy.Spawner = gameObject;
             enemy.transform.parent = gameObject.transform;
-            enemy.type = (int)enemyTypeID;
-            StartCoroutine(SpawnCooldown());
-            cooldown = true;
-            count++;
+            enemy.EnemyType = (int)enemyTypeID;
+            list.Add(enemy.EnemyID, enemy);
             
-            list.Add(enemy.enemyID, enemy);
+            enemySpawnCount++;
+            StartCoroutine(SpawnCooldown());
+            isOnSpawnCooldown = true;
+            
             SendSpawnedToAll(enemy);
         }
     }
     
     IEnumerator SpawnCooldown() {
-        yield return new WaitForSeconds(interval);
-        cooldown = false;
+        yield return new WaitForSeconds(spawnInterval);
+        isOnSpawnCooldown = false;
     }
-    
 
-    
+    private static Enemy Spawn(Vector2 position, GameObject enemyPrefab, ushort lvl) {
+        Enemy enemy = Instantiate(enemyPrefab, position, Quaternion.identity).GetComponent<Enemy>();
+        enemy.EnemyName = "Enemy";
+        enemy.EnemyID = _id;
+        enemy.LivePoints = lvl * 1;
+        _id++;
+        return enemy;
+        
+    }
+
     private void SendSpawnedToAll(Enemy enemy) {
         Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.enemySpawned);
-        message.AddInt(enemy.enemyID);
-        message.AddInt(enemy.type);
+        message.AddInt(enemy.EnemyID);
+        message.AddInt(enemy.EnemyType);
         message.AddVector3(enemy.transform.position);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 
     public void ReduceCount(ushort number) {
-       count -= number;
+       enemySpawnCount -= number;
     }
 }
 

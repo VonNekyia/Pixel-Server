@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b75c95f34a00d4e8c04f76b73312e6, type: 3}
+  m_Name: Shrine3-available
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: -903621100, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: 348592395, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: 239568818, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: 1953038359, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -1535859072, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -1342875387, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -1447724942, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: 1120174488, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -361151426, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -157593473, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -1196758536, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: 709140374, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: 1169079414, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  - {fileID: -467751940, guid: c9c26963a9656c846b1692276b69a5eb, type: 3}
+  m_MinSpeed: 10
+  m_MaxSpeed: 10
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 0

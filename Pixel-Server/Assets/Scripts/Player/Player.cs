@@ -57,8 +57,8 @@ public class Player : MonoBehaviour
     
     static void SendSpawned(Enemy enemy, ushort clientID) {
         Message message = Message.Create(MessageSendMode.reliable, ServerToClientID.enemySpawned);
-        message.AddInt(enemy.enemyID);
-        message.AddInt(enemy.type);
+        message.AddInt(enemy.EnemyID);
+        message.AddInt(enemy.EnemyType);
         message.AddVector3(enemy.transform.position);
         NetworkManager.Singleton.Server.Send(message,clientID);
     }

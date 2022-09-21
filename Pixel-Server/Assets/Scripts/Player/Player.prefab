@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 4473453317118903400}
   rb: {fileID: 6592229540204966546}
-  movementSpeed: 20
+  movementSpeed: 40
   movementFilter:
     useTriggers: 0
     useLayerMask: 0
